@@ -1,0 +1,164 @@
+/* INPUT AREA */
+#te {
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+}
+
+.text {
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 2px solid var(--light-gray);
+}
+
+.text:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* ADD BUTTON */
+.btn {
+    padding: 12px 18px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn i {
+    color: var(--white);
+}
+
+.btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* FILTERS */
+.filters {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background-color: var(--light-gray);
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filterBtn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+.filterBtn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.filterBtn.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+/* TASK LIST */
+ul {
+    list-style: none;
+    border-top: 1px solid var(--medium-gray);
+    border-bottom: 1px solid var(--medium-gray);
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+/* TASK ITEM */
+li {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+li:hover {
+    background-color: var(--light-gray);
+}
+
+/* CHECKBOX */
+ul input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    cursor: pointer;
+    accent-color: var(--success-color);
+}
+
+/* TASK TEXT */
+ul span {
+    flex: 1;
+    word-break: break-word;
+}
+
+/* COMPLETED TASK */
+.completed {
+    text-decoration: line-through;
+    color: var(--dark-gray);
+}
+
+/* DELETE BUTTON */
+.delBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+li i {
+    color: var(--danger-color);
+    visibility: hidden;
+}
+
+li:hover i {
+    visibility: visible;
+}
+
+/* EMPTY MESSAGE */
+.empty {
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    color: var(--dark-gray);
+}
+
+/* FOOTER */
+.list-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding: 15px;
+    background-color: var(--light-gray);
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.list-footer button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+}
+
+.list-footer button:hover {
+    color: var(--danger-color);
+    text-decoration: underline;
+}
+
+/* COUNTER */
+.Items {
+    font-weight: 500;
+}
