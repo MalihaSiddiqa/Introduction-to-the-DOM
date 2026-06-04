@@ -1,3 +1,4 @@
+//Selecting Elements.
 const form = document.getElementById("bookmarkForm");
 const bookmarksList = document.getElementById("bookmarksList");
 const filterButtons=document.querySelectorAll(".filter-btn");
@@ -13,10 +14,16 @@ let currentFilter="All";
 
 function addBookMark(e) {
     e.preventDefault();
-    const websiteTitle = document.getElementById("websiteTitle").value;
-    const websiteUrl = document.getElementById("websiteUrl").value;
+    const websiteTitle = document.getElementById("websiteTitle").value.trim();
+    const websiteUrl = document.getElementById("websiteUrl").value.trim();
     const category = document.getElementById("category").value;
-    renderBookmarks();
+    if(!websiteTitle||!websiteUrl){
+        alert("Please fill all fields");
+        return;
+    }
+    if(!websiteUrl.startsWith("http")){
+        websiteUrl="https://"+websiteUrl;
+    }
 
     const newBookmark = {
         id: Date.now(),
@@ -25,7 +32,7 @@ function addBookMark(e) {
         category: category
     };
     bookmarks.push(newBookmark);
-    console.log(bookmarks);
+    saveBookmarks();
     renderBookmarks();
     form.reset();
 }
@@ -95,7 +102,8 @@ function filterBookmarks(categoryFilter) {
 }
 //Init function
 function init() {
-form.addEventListener("submit", addBookMark);
+    loadBookmarks();
+    renderBookmarks();
     filterButtons.forEach(function(filterButton){
       filterButton.addEventListener("click",()=>{
         filterButtons.forEach(function(btn){
@@ -104,7 +112,7 @@ form.addEventListener("submit", addBookMark);
         filterButton.classList.add("active");
         currentFilter=filterButton.dataset.category;
         renderBookmarks();
-      })
+      });
     });
 }
 document.addEventListener("DOMContentLoaded",init);
@@ -115,6 +123,7 @@ function deleteBookmark(id) {
    bookmarks=bookmarks.filter(function(bookmark){
     return bookmark.id !== id;
    });
+   saveBookmarks();
     renderBookmarks();
 }
 
