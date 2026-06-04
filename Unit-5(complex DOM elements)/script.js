@@ -1,4 +1,4 @@
-//selecting Elements
+
 const addBooksection=document.querySelector(".add-book-section");
 const toggleFormBtn=document.querySelector(".toggle-btn");
 const typeSelect=document.getElementById("type");
@@ -8,11 +8,11 @@ const bookList=document.getElementById("book-list");
 
 let books=[];
 class Book {
-    constructor(title,author,id,type="physical") {
+    constructor(title,author) {
         this.title=title;
         this.author=author;
         this.id=Date.now();
-        this.type=type;
+        this.type="physical";
         this.available=true;
         this.borrower=null;
     }
@@ -31,14 +31,16 @@ class Book {
      bookCard.classList.add("book-card");
      bookCard.dataset.id=this.id;
      const statusText=this.available ? "Available" : `Borrowed by ${this.borrower}`;
-     const buttonClass=this.available ? "btn.borrow":"btn-remove btn-return";
+     const buttonClass=this.available ? "btn btn-borrow":"btn btn-return";
      const buttonText=this.available ? "Borrow" : "Return";
      bookCard.innerHTML=`
      <h3 class="book-title">Title: ${this.title}</h3>
      <div class="book-meta">Author: ${this.author}</div>
+     <div class="book-meta">Type: ${this.type}</div>
+
      <div class="book-meta">Status: ${statusText}</div>
      <div class="book-actions">
-       <button class="btn btn-borrow ${buttonClass}">${buttonText}</button>
+       <button class="${buttonClass}">${buttonText}</button>
        <button class="btn btn-remove">Remove</button>
        </div>
        `;
@@ -66,7 +68,7 @@ class Ebook extends Book{
         bookCard.dataset.id = this.id;
         const hasBorrower = this.borrower !== null;
         const statusText = hasBorrower ? `Borrowed by ${this.borrower}` : "Available";
-        const buttonClass = hasBorrower ? "btn-remove btn-return" : "btn-borrow";
+        const buttonClass = hasBorrower ? "btn btn-return" : "btn btn-download";
         const buttonText = hasBorrower ? "Return" : "Download";
 
         bookCard.innerHTML = `
@@ -75,7 +77,7 @@ class Ebook extends Book{
             <div class="book-meta">File Size: ${this.fileSize} MB</div>
             <div class="book-meta">Status: ${statusText}</div>
             <div class="book-actions">
-                <button class="btn ${buttonClass}">${buttonText}</button>
+                <button class="${buttonClass}">${buttonText}</button>
                 <button class="btn btn-remove">Remove</button>
             </div>
         `;
@@ -110,7 +112,7 @@ typeSelect.addEventListener("change",()=>{
 
 //Feature 3a: Create a new book to the list when the form is submitted.
 
-bookForm.addEventListener("submit",()=>{
+bookForm.addEventListener("submit",(event)=>{
     event.preventDefault();
     const title=document.getElementById("title").value;
     const author=document.getElementById("author").value;
@@ -121,8 +123,9 @@ bookForm.addEventListener("submit",()=>{
         newBook=new Ebook(title,author,fileSize);
     }
     else{
-        newBook=new Book(title,author,type);
+        newBook=new Book(title,author);
     }
+    console.log(newBook);
     books.push(newBook);
     displayBooks();
     saveBooks();
@@ -171,8 +174,8 @@ if (matchedBook && matchedBook.available) {
    });
 
 //Fetute 7: make the remove button functional
-const removeButton=document.querySelectorAll(".btn-remove");
-removeButton.forEach((button) => {
+const removeButtons=document.querySelectorAll(".btn-remove");
+removeButtons.forEach((button) => {
 button.addEventListener("click",()=>{
   const isConfirmed=confirm("Are you sure you want to remove this book?");
   if (isConfirmed){
@@ -183,11 +186,24 @@ button.addEventListener("click",()=>{
 });
 
 });
+const downloadButtons = document.querySelectorAll(".btn-download");
+ downloadButtons.forEach((button) => {
+button.addEventListener("click", () => {
+const bookCard = button.closest(".book-card");
+const bookId = Number(bookCard.dataset.id);
+const matchedBook = books.find(book => book.id === bookId);
+    if (matchedBook) {
+        alert(`Downloading "${matchedBook.title}" (${matchedBook.fileSize} MB)...`);
+         }
+});
+});
+
 }
 function borrowBooks(bookId,bookBorrower){
    const matchedBook=books.find(book=>book.id===bookId);
    if(matchedBook){
     matchedBook.borrow(bookBorrower);
+    saveBooks();
     displayBooks();
    }
 }
@@ -196,7 +212,7 @@ function returnBooks(bookId){
    const matchedBook=books.find(book=>book.id===bookId);
    if(matchedBook){
     matchedBook.markReturn();
-    matchedBook.getHTML();
+    saveBooks();
     displayBooks();
    }
 }
@@ -205,6 +221,7 @@ function removeBooks(bookId){
     if(index !== -1){
         books.splice(index,1);
     }
+    saveBooks();
     displayBooks();
 }
 
@@ -218,7 +235,13 @@ function loadBooks() {
     if (stored !== null) {
         const bookObjects=JSON.parse(stored);
         books = bookObjects.map((obj) =>{
-            const rehydratedBook = new Book(obj.title, obj.author, obj.type);
+            let rehydratedBook;
+            if (obj.type === "ebook") {
+                rehydratedBook = new Ebook(obj.title, obj.author, obj.fileSize);
+            } else {
+                rehydratedBook = new Book(obj.title, obj.author);
+            }
+    
             rehydratedBook.id = obj.id;
             rehydratedBook.available = obj.available;
             rehydratedBook.borrower = obj.borrower;
