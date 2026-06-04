@@ -1,16 +1,30 @@
-//selecting elements
+//Selecting Elements
 const taskInput=document.querySelector('.text');
 const addTaskBtn=document.querySelector('.btn');
 const taskList=document.querySelector('ul');
 const taskCounter=document.querySelector("#count");
 
-const filterAllBtn=document.querySelector("[data-filter="all"]");
-const filterActiveBtn=document.querySelector("[data-filter="active"]");
-const filterCompletedBtn=document.querySelector("[data-filter="completed"]");
+const filterAllBtn=document.querySelector('[data-filter="all"]');
+const filterActiveBtn=document.querySelector('[data-filter="active"]');
+const filterCompletedBtn=document.querySelector('[data-filter="completed"]');
+const ClearCompletedBtn=document.querySelector('.clear-completed');
 
 
  let tasks=[];
-let currentFilter="all";
+ let currentFilter="all";
+ addTaskBtn.addEventListener("click",()=>{
+     const taskText=taskInput.value.trim();
+     if (taskText === "") return; 
+     const newTask={
+        id: Date.now(),
+        text:taskText,
+        completed:false
+     };
+        tasks.push(newTask);
+        saveTasks();
+        taskInput.value="";
+        showTasks();
+     });
 function toggleTask(id) {
     tasks = tasks.map(task => {
         if (task.id === id) {
@@ -26,19 +40,6 @@ function clearCompleted() {
     saveTasks();
     showTasks();
 }
- addTaskBtn.addEventListener("click",()=>{
-     const taskText=taskInput.value.trim();
-     if (taskText === "") return; 
-     const newTask={
-        id: Date.now(),
-        text:taskText,
-        completed:false
-     };
-        tasks.push(newTask);
-        saveTasks();
-        taskInput.value="";
-        showTasks();
-     });
  
 //showTasks
  function showTasks() {
@@ -60,7 +61,7 @@ function clearCompleted() {
         checkbox.type = "checkbox";
         checkbox.checked = task.completed;
      checkbox.addEventListener("change",()=>{
-      toogleTask(task.id);
+      toggleTask(task.id);
      });
  
     const span=document.createElement("span");
@@ -106,24 +107,27 @@ function loadTasks(){
     showTasks();
 }
 if (filterAllBtn){
- filterAllBtn.addEvenetListener("click",()=>{
-  currentFilter="active";
+ filterAllBtn.addEventListener("click",()=>{
+  currentFilter="all";
   showTasks();
  });
 }
 
 if (filterActiveBtn){
- filterActiveBtn.addEvenetListener("click",()=>{
+ filterActiveBtn.addEventListener("click",()=>{
   currentFilter="active";
   showTasks();
  });
 }
 
 if (filterCompletedBtn){
- filterCommpletedBtn.addEvenetListener("click",()=>{
-  currentFilter="active";
+ filterCompletedBtn.addEventListener("click",()=>{
+  currentFilter="completed";
   showTasks();
  });
+}
+if(ClearCompletedBtn){
+    ClearCompletedBtn.addEventListener("click",clearCompleted)
 }
 document.addEventListener('DOMContentLoaded',loadTasks);
 
